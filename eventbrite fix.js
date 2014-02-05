@@ -1,5 +1,5 @@
 // The Eventbrite ID of the event. Shows up in http://www.eventbrite.com/checkin?eid=8965216203 for instance.
-var EID = 8965216203;
+var EID = window.location.href.match(/eid=(\d+)/)[1];
 
 // add our own styles to fix stuff
 function restyle() {
@@ -34,7 +34,7 @@ function restyle() {
 
     if(document.getElementById("sidebar_hide") == null) {
         jQuery("<input type='button' class='btn' id='sidebar_hide' name='sidebar_hide' value='Hide'></input>")
-            .appendTo("#col_210")
+            .after("#col_210")
             .click(function() {
                 jQuery("#col_210").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
             });
