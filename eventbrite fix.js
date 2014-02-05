@@ -44,7 +44,7 @@ function restyle() {
         ".table_expand {" +
             "position: absolute;" +
             "right: 10px;" +
-            "margin-top: -1.5em;" +
+            "top: -2.5em;" +
         "}" +
         "thead tr td.column_toggle { background-color: #e7e7e7; }" + 
         "tbody td.column_toggle { background-color: #f7f7f7; }" + 
@@ -125,15 +125,15 @@ jQuery("#checkin_table").on("click.fixer", function(event) {
                     showAllButton.attr("value","Hide all");
                 else
                     showAllButton.attr("value","Show all");
-            }).appendTo(jrow.children("td").eq(3));
+            }).appendTo(floatingTD);
         });
     }
 });
 
 function prettifyColumns(table) {
     // Columns to hide, 1-indexed because of nth-of-type selector
-    // Hide order type, shirt size
-    var hideColumns = [7,13];
+    // Hide checkin date (usually empty), order type, shirt size
+    var hideColumns = [5,7,13];
     // Columns to change names of, 0-indexed
     var nameChangeMap = {
         11: "Badge Name",
@@ -158,3 +158,4 @@ function prettifyColumns(table) {
 // little TODO notes for self:
 // what if table contents changes while we're fetching
 // make the email link to a report search with all orders, even refunded / abandoned
+// reskin with BronyCon theme
