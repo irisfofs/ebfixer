@@ -101,11 +101,11 @@ jQuery("#checkin_table").click(function(event) {
             floatingTD.html("<table class='report'>" + table.html() + "</table>");
 
             var attendeeTable = floatingTD.find("table");
-            jrow.children("td").css("padding-bottom", attendeeTable.height() + 15);
+            jrow.children("td").not(".loading").css("padding-bottom", attendeeTable.height() + 15);
             // I'm not sure this actually ever does anything
             attendeeTable.resize(function() {
                 console.log("Resize handler called");
-                jrow.children("td").css("padding-bottom", attendeeTable.height() + 15);
+                jrow.children("td").not(".loading").css("padding-bottom", attendeeTable.height() + 15);
             });
         });
     }
