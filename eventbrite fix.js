@@ -7,7 +7,7 @@ function restyle() {
         "#promo_banner, #event_details_bar { display: none; } " +
         "#container_content { width: calc(100% - 60px); margin: 0; padding: 0 20px; }" +
         ".main { width: 100%; min-height: 900px; position; relative; margin: 10px auto; padding: 0; }" +
-        "#col_210 { position: absolute; z-index: 100; margin-top: 27px; padding: 0; }" +
+        "#col_210 { position: absolute; z-index: 100; margin-top: 27px; padding: 0; width: auto; }" +
         "#side_navigation {"+
             "background-color: #fff;" +
             "margin-top: 0;" +
@@ -41,6 +41,13 @@ function restyle() {
         "#checkin_table tr.expanded > td { " +
             "padding-bottom: 45px;" +
         "}" +
+        ".table_expand {" +
+            "position: absolute;" +
+            "right: 10px;" +
+            "margin-top: -1.5em;" +
+        "}" +
+        "thead tr td.column_toggle { background-color: #e7e7e7; }" + 
+        "tbody td.column_toggle { background-color: #f7f7f7; }" + 
         ".fix_loading_gif { display:block; margin-left: auto; margin-right: auto; }";
     if(document.getElementById("fix_styles") == null)
         jQuery("<style type='text/css' id='fix_styles'>" + myStyle + "</style>").appendTo("head");
@@ -102,7 +109,19 @@ jQuery("#checkin_table").click(function(event) {
 
             var attendeeTable = floatingTD.find("table");
             // +15 is to account for various paddings and what not. It's basically magic, I'm sorry.
-            jrow.children("td").not(".loading").css("padding-bottom", attendeeTable.height() + 15);
+            var resizeTDPadding = function() { jrow.children("td").not(".loading").css("padding-bottom", attendeeTable.height() + 15); }
+            resizeTDPadding();
+
+            // add "Show all" button to the 4th column
+            var showAllButton = jQuery("<input type='button' class='btn btn--small table_expand' value='Show all'></input>");
+            showAllButton.click(function() {
+                attendeeTable.find(".column_toggle").animate({width: "toggle"}, 200, resizeTDPadding);
+                // Toggle text
+                if(showAllButton.attr("value") === "Show all")
+                    showAllButton.attr("value","Hide all");
+                else
+                    showAllButton.attr("value","Show all");
+            }).appendTo(jrow.children("td").eq(3));
         });
     }
 });
