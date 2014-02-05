@@ -49,12 +49,14 @@ function restyle() {
         "thead tr td.column_toggle { background-color: #e7e7e7; }" + 
         "tbody td.column_toggle { background-color: #f7f7f7; }" + 
         ".fix_loading_gif { display:block; margin-left: auto; margin-right: auto; }";
+
     if(document.getElementById("fix_styles") == null)
         jQuery("<style type='text/css' id='fix_styles'>" + myStyle + "</style>").appendTo("head");
     else
         jQuery("#fix_styles").text(myStyle);
 
     jQuery("#side_navigation").hide();
+
     if(document.getElementById("sidebar_hide") == null) {
         var hbutton = jQuery("<input type='button' class='btn' id='sidebar_hide' name='sidebar_hide' value='>'></input>");
         hbutton.appendTo("#col_210")
@@ -72,9 +74,9 @@ function restyle() {
 restyle();
 
 // for repasting the same code sometimes
-jQuery("#checkin_table").off("click");
+jQuery("#checkin_table").off("click.fixer");
 
-jQuery("#checkin_table").click(function(event) {
+jQuery("#checkin_table").on("click.fixer", function(event) {
     // get actual row
     var row = jQuery(event.target).parents("#checkin_table > tbody > tr")[0];
     console.log(row);
@@ -92,7 +94,9 @@ jQuery("#checkin_table").click(function(event) {
         // Extract attendee email for populating attendee report list
         var email = jrow.find("td:nth-of-type(3)").children().text();
         // Plug into the report generation URL
-        var reportURL = "http://www.eventbrite.com/myevent/"+EID+"/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=02349ABJKMad&search=" + email;
+        var reportURL = "http://www.eventbrite.com/myevent/" + EID
+            + "/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=0249AJKMYadh&search="
+            + email;
 
         // need to make not trigger when already querying
         jQuery.get(reportURL, function(data) {
@@ -128,25 +132,29 @@ jQuery("#checkin_table").click(function(event) {
 
 function prettifyColumns(table) {
     // Columns to hide, 1-indexed because of nth-of-type selector
-    // Hide code, order type, and attendee status
-    var hideColumns = [6,8,10];
+    // Hide order type, shirt size
+    var hideColumns = [7,13];
     // Columns to change names of, 0-indexed
     var nameChangeMap = {
         11: "Badge Name",
         12: "Shirt Size",
         13: "Emergency Info"
     };
-    table.find("tr td:nth-of-type(16)").hide(); // hide Quick Actions because it's broken.
+    // Columns to remove and not reshow (1-indexed): Attendee Status (always "Attending"), Quick Actions (doesn't work on this page)
+    var removeColumns = [9, 16];
+
+    // Hide
     for(var i=0; i < hideColumns.length; i++)
         table.find("tr td:nth-of-type("+hideColumns[i]+")").addClass("column_toggle").hide();
+    // Change name
     for(var num in nameChangeMap)
         if(nameChangeMap.hasOwnProperty(num))
             table.find("thead > tr > td").eq(num).text(nameChangeMap[num]);
+    // Remove
+    for(var i=0; i < removeColumns.length; i++)
+        table.find("tr td:nth-of-type("+removeColumns[i]+")").hide();
 }
 
 // little TODO notes for self:
 // what if table contents changes while we're fetching
-// load table and hide some columns, with button for "show all columns"
-    // Whenever the button is added:
-    // table.find("td.column_toggle").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
-// optimize for 1280x1024 screens, inc. hiding the normal EB menus
+// make the email link to a report search with all orders, even refunded / abandoned
