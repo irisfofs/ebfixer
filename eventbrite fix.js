@@ -5,16 +5,31 @@ var EID = window.location.href.match(/eid=(\d+)/)[1];
 function restyle() {
     var myStyle = 
         "#promo_banner { display: none; } " +
-        "#container_content { width: 1012px; }" +
-        ".main { width: 1232px; position: relative; }" +
+        "#container_content { width: 1240px; margin: 0 0 0 20px; padding: 0px; }" +
+        ".main { width: 1280px; position: relative; margin: 10px auto; padding: 0; }" +
+        "#col_210 { position: absolute; z-index: 100; margin-top: 27px; padding: 0; }" +
+        "#side_navigation {"+
+            "background-color: #fff;" +
+            "margin-top: 0;" +
+            "width: 198px;" +
+            "float: left;" +
+         "}" +
         "#sidebar_hide {" +
-            "position: absolute;" +
-            "top: 0px;" +
-            "left: 210px;" +
+            // "position: absolute;" +
+            // "top: 0px;" +
+            // "left: 210px;" +
+            "height: 800px;" +
+            "z-index: 110;" +
+            "padding: 0px;" +
+            "width: 12px;" +
+            "float: left" +
             // border: none;
             // padding: 5px;
         "}" +
         "#checkin_table { position: relative; }" +
+        "#checkin_table tr th:nth-of-type(2) { width: 25% }" +
+        "#checkin_table tr th:nth-of-type(3) { width: 30% }" +
+        "#checkin_table tr th:nth-of-type(4) { width: 40% }" +
         "#checkin_table td.loading {" +
             "position: absolute;" +
             "left: 0px;" +
@@ -32,11 +47,18 @@ function restyle() {
     else
         jQuery("#fix_styles").text(myStyle);
 
+    jQuery("#side_navigation").hide();
     if(document.getElementById("sidebar_hide") == null) {
-        jQuery("<input type='button' class='btn' id='sidebar_hide' name='sidebar_hide' value='Hide'></input>")
-            .after("#col_210")
+        var hbutton = jQuery("<input type='button' class='btn' id='sidebar_hide' name='sidebar_hide' value='>'></input>");
+        hbutton.appendTo("#col_210")
             .click(function() {
-                jQuery("#col_210").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
+                // jQuery("#side_navigation").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
+                jQuery("#side_navigation").animate({opacity: "toggle", width: "toggle"}, 200, function(){} );
+                if(hbutton.attr("value") === ">") {
+                    hbutton.attr("value","<");
+                } else {
+                    hbutton.attr("value",">");
+                }
             });
     }
 }
