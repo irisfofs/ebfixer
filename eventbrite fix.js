@@ -29,6 +29,7 @@ jQuery("#checkin_table").click(function(event) {
     console.log(row);
     if(row != undefined) {
         var jrow = jQuery(row);
+
         if(jrow.data("expanded") != undefined)
             return; // don't trigger twice
         jrow.data("expanded", true);
@@ -37,27 +38,54 @@ jQuery("#checkin_table").click(function(event) {
         jrow.addClass("expanded");
         jrow.append(floatingTD);
 
+        // Extract attendee email for populating attendee report list
         var email = jrow.find("td:nth-of-type(3)").children().text();
+        // Plug into the report generation URL
+        var reportURL = "http://www.eventbrite.com/myevent/8965216203/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=02349ABJKMad&search=" + email;
 
         // need to make not trigger when already querying
-        jQuery.get("http://www.eventbrite.com/myevent/8965216203/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=02349ABJKMad&search=" + email,
-            function(data) {
-                var table = jQuery(data).find("table.l-block-3.report");
+        jQuery.get(reportURL, function(data) {
+            // Extract the report table from report HTML page
+            var table = jQuery(data).find("table.l-block-3.report");
 
-                // remove ugly caption title with broken handlebars script
-                table.children("caption").remove();
+            // remove ugly caption title with broken handlebars script
+            table.children("caption").remove();
 
-                floatingTD.html("<table class='report'>" + table.html() + "</table>");
+            prettifyColumns(table);
 
-                var attendeeTable = floatingTD.find("table");
+            // Put table into the floating cell
+            floatingTD.html("<table class='report'>" + table.html() + "</table>");
+
+            var attendeeTable = floatingTD.find("table");
+            jrow.children("td").css("padding-bottom", attendeeTable.height() + 15);
+            // I'm not sure this actually ever does anything
+            attendeeTable.resize(function() {
+                console.log("Resize handler called");
                 jrow.children("td").css("padding-bottom", attendeeTable.height() + 15);
-                attendeeTable.resize(function() {
-                    jrow.children("td").css("padding-bottom", attendeeTable.height() + 15);
-                });
             });
+        });
     }
 });
 
-// what if table contents changes while we're fetching
+function prettifyColumns(table) {
+    // Columns to hide, 1-indexed because of nth-of-type selector
+    // Hide code, order type, and attendee status
+    var hideColumns = [6,8,10];
+    // Columns to change names of, 0-indexed
+    var nameChangeMap = {
+        11: "Badge Name",
+        12: "Shirt Size",
+        13: "Emergency Info"
+    };
+    table.find("tr td:nth-of-type(16)").hide(); // hide Quick Actions because it's broken.
+    for(var i=0; i < hideColumns.length; i++)
+        table.find("tr td:nth-of-type("+hideColumns[i]+")").addClass("column_toggle").hide();
+    for(var num in nameChangeMap)
+        if(nameChangeMap.hasOwnProperty(num))
+            table.find("thead > tr > td").eq(num).text(nameChangeMap[num]);
+}
 
+// little TODO notes for self:
+// what if table contents changes while we're fetching
 // load table and hide some columns, with button for "show all columns"
+// optimize for 1280x1024 screens, inc. hiding the normal EB menus
