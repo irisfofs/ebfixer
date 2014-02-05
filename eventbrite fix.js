@@ -4,9 +4,9 @@ var EID = window.location.href.match(/eid=(\d+)/)[1];
 // add our own styles to fix stuff
 function restyle() {
     var myStyle = 
-        "#promo_banner { display: none; } " +
-        "#container_content { width: 1240px; margin: 0 0 0 20px; padding: 0px; }" +
-        ".main { width: 1280px; position: relative; margin: 10px auto; padding: 0; }" +
+        "#promo_banner, #event_details_bar { display: none; } " +
+        "#container_content { width: calc(100% - 60px); margin: 0; padding: 0 20px; }" +
+        ".main { width: 100%; min-height: 900px; position; relative; margin: 10px auto; padding: 0; }" +
         "#col_210 { position: absolute; z-index: 100; margin-top: 27px; padding: 0; }" +
         "#side_navigation {"+
             "background-color: #fff;" +
