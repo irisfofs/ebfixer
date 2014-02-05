@@ -1,24 +1,46 @@
-// FANCIER VERSION w/ DELEGATED EVENT HANDLING
+// The Eventbrite ID of the event. Shows up in http://www.eventbrite.com/checkin?eid=8965216203 for instance.
+var EID = 8965216203;
 
 // add our own styles to fix stuff
-var myStyle = 
+function restyle() {
+    var myStyle = 
+        "#promo_banner { display: none; } " +
+        "#container_content { width: 1012px; }" +
+        ".main { width: 1232px; position: relative; }" +
+        "#sidebar_hide {" +
+            "position: absolute;" +
+            "top: 0px;" +
+            "left: 210px;" +
+            // border: none;
+            // padding: 5px;
+        "}" +
         "#checkin_table { position: relative; }" +
         "#checkin_table td.loading {" +
             "position: absolute;" +
             "left: 0px;" +
-            "width: 90%;" +
+            // "width: 90%;" +
             "height: 45px;" +
             "margin-top: 45px;" +
+            "border: none;" +
         "}" +
         "#checkin_table tr.expanded > td { " +
             "padding-bottom: 45px;" +
         "}" +
         ".fix_loading_gif { display:block; margin-left: auto; margin-right: auto; }";
-if(document.getElementById("fix_styles") == null) {
-    jQuery("<style type='text/css' id='fix_styles'>" + myStyle + "</style>").appendTo("head");
-} else {
-    jQuery("#fix_styles").text(myStyle);
+    if(document.getElementById("fix_styles") == null)
+        jQuery("<style type='text/css' id='fix_styles'>" + myStyle + "</style>").appendTo("head");
+    else
+        jQuery("#fix_styles").text(myStyle);
+
+    if(document.getElementById("sidebar_hide") == null) {
+        jQuery("<input type='button' class='btn' id='sidebar_hide' name='sidebar_hide' value='Hide'></input>")
+            .appendTo("#col_210")
+            .click(function() {
+                jQuery("#col_210").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
+            });
+    }
 }
+restyle();
 
 // for repasting the same code sometimes
 jQuery("#checkin_table").off("click");
@@ -41,7 +63,7 @@ jQuery("#checkin_table").click(function(event) {
         // Extract attendee email for populating attendee report list
         var email = jrow.find("td:nth-of-type(3)").children().text();
         // Plug into the report generation URL
-        var reportURL = "http://www.eventbrite.com/myevent/8965216203/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=02349ABJKMad&search=" + email;
+        var reportURL = "http://www.eventbrite.com/myevent/"+EID+"/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=02349ABJKMad&search=" + email;
 
         // need to make not trigger when already querying
         jQuery.get(reportURL, function(data) {
@@ -88,4 +110,6 @@ function prettifyColumns(table) {
 // little TODO notes for self:
 // what if table contents changes while we're fetching
 // load table and hide some columns, with button for "show all columns"
+    // Whenever the button is added:
+    // table.find("td.column_toggle").toggle({ "duration": 200, "specialEasing": { "width": "swing"} });
 // optimize for 1280x1024 screens, inc. hiding the normal EB menus
