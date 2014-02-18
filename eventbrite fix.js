@@ -30,6 +30,7 @@ function restyle() {
         "#checkin_table tr th:nth-of-type(2) { width: 25% }" +
         "#checkin_table tr th:nth-of-type(3) { width: 30% }" +
         "#checkin_table tr th:nth-of-type(4) { width: 40% }" +
+        "#checkin_table td span { width: auto; }" +
         "#checkin_table td.loading {" +
             "position: absolute;" +
             "left: 0px;" +
@@ -94,7 +95,7 @@ jQuery("#checkin_table").on("click.fixer", function(event) {
         // Extract attendee email for populating attendee report list
         var email = jrow.find("td:nth-of-type(3)").children().text();
         // Plug into the report generation URL
-        var reportURL = "http://www.eventbrite.com/myevent/" + EID
+        var reportURL = "https://www.eventbrite.com/myevent/" + EID
             + "/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=0249AJKMYadh&search="
             + email;
 
@@ -159,3 +160,4 @@ function prettifyColumns(table) {
 // what if table contents changes while we're fetching
 // make the email link to a report search with all orders, even refunded / abandoned
 // reskin with BronyCon theme
+// add a refresh button for old stuff
