@@ -1,5 +1,6 @@
 // The Eventbrite ID of the event. Shows up in http://www.eventbrite.com/checkin?eid=8965216203 for instance.
 var EID = window.location.href.match(/eid=(\d+)/)[1];
+var https = window.location.href.match(/^(https?)/)[1];
 
 // add our own styles to fix stuff
 function restyle() {
@@ -95,7 +96,7 @@ jQuery("#checkin_table").on("click.fixer", function(event) {
         // Extract attendee email for populating attendee report list
         var email = jrow.find("td:nth-of-type(3)").children().text();
         // Plug into the report generation URL
-        var reportURL = "https://www.eventbrite.com/myevent/" + EID
+        var reportURL = https + "://www.eventbrite.com/myevent/" + EID
             + "/reports/attendee/?s=1&date=all&attendee_status=attending&column_groups=0249AJKMYadh&search="
             + email;
 
